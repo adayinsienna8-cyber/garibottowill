@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Register</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      background: #111;
+      color: white;
+      padding-top: 80px;
+    }
+
+    input {
+      display: block;
+      margin: 10px auto;
+      padding: 10px;
+      width: 250px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background: green;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    #msg {
+      margin-top: 20px;
+      color: yellow;
+    }
+  </style>
+</head>
+
+<body>
+
+<h2>Register</h2>
+
+<input id="email" type="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
+
+<button onclick="register()">Register</button>
+
+<p id="msg"></p>
+
+<script>
+async function register() {
+  try {
+    const res = await fetch("http://localhost:3001/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        email: document.getElementById("email").value,
+        password: document.getElementById("password").value
+      })
+    });
+
+    const data = await res.json();
+    document.getElementById("msg").innerText = data.message;
+
+  } catch (error) {
+    document.getElementById("msg").innerText = "Server not responding ❌";
+  }
+}
+</script>
+
+</body>
+</html>

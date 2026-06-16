@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #111827;
+    color: white;
+    text-align: center;
+    padding: 40px;
+}
+
+.card {
+    background: #1f2937;
+    padding: 20px;
+    margin: 20px auto;
+    width: 300px;
+    border-radius: 10px;
+}
+
+button {
+    padding: 10px 15px;
+    margin: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.refresh {
+    background: #2563eb;
+    color: white;
+}
+
+.logout {
+    background: red;
+    color: white;
+}
+
+h2 {
+    color: #22c55e;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Investment Dashboard</h1>
+
+<div class="card">
+    <p>Email:</p>
+    <h3 id="email">Loading...</h3>
+</div>
+
+<div class="card">
+    <p>Balance:</p>
+    <h2>$<span id="balance">0</span></h2>
+</div>
+
+<button class="refresh" onclick="loadDashboard()">Refresh</button>
+<button class="logout" onclick="logout()">Logout</button>
+
+<script>
+
+async function loadDashboard() {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        alert("No token found. Please login again.");
+        window.location.href = "login.html";
+        return;
+    }
+
+    try {
+        const res = await fetch("http://localhost:3001/dashboard", {
+            method: "GET",
+            headers: {
+                "Authorization": token
+            }
+        });
+
+        const data = await res.json();
+
+        console.log("Dashboard data:", data);
+
+        document.getElementById("email").innerText = data.email || "N/A";
+        document.getElementById("balance").innerText = data.balance || 0;
+
+    } catch (err) {
+        console.log(err);
+        alert("Server not responding ❌");
+    }
+}
+
+function logout() {
+    localStorage.removeItem("token");
+    window.location.href = "login.html";
+}
+
+// auto load on page open
+loadDashboard();
+
+</script>
+
+</body>
+</html>
